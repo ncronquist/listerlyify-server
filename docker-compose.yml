@@ -1,0 +1,23 @@
+version: '2'
+services:
+    database:
+        container_name: docker_pg
+        image: postgres:9.5
+        networks:
+            app_net:
+                ipv4_address: 172.16.238.2
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_USER=postgres
+            - PGDATA=/var/lib/postgresql/data/pgdata
+            - POSTGRES_DB=docker
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+        gateway: 172.16.238.1
