@@ -1,18 +1,41 @@
 version: '2'
 services:
-    database:
-        container_name: docker_pg
-        image: postgres:9.5
-        networks:
-            app_net:
-                ipv4_address: 172.16.238.2
-        ports:
-            - "5432:5432"
-        environment:
-            - POSTGRES_PASSWORD=docker
-            - POSTGRES_USER=docker
-            - PGDATA=/var/lib/postgresql/data/pgdata
-            - POSTGRES_DB=docker
+  database:
+    container_name: docker_pg
+    image: postgres:9.5
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.2
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_USER=docker
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=docker
+  service:
+    container_name: listerlyify_service
+    build: .
+    image: listerlyify_service
+    command: /opt/listerlyify/run-service
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.3
+    ports:
+      - "4000:4000"
+      - "5858:5858"
+    volumes:
+      - $HOME/.ssh:/root/.ssh
+      - .:/opt/listerlyify
+    depends_on:
+      - database
+  deps-install:
+    container_name: listerlyify_install
+    build: .
+    command: /opt/listerlyify/run-install
+    volumes:
+      - .:/opt/listerlyify
+
 networks:
   app_net:
     driver: bridge

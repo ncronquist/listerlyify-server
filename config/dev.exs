@@ -39,5 +39,5 @@ config :listerlyify, Listerlyify.Repo,
   username: "docker",
   password: "docker",
   database: "listerlyify_dev",
-  hostname: "localhost",
+  hostname: "172.16.238.2",
   pool_size: 10
