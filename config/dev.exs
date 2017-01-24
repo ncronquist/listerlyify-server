@@ -39,5 +39,5 @@ config :listerlyify, Listerlyify.Repo,
   username: "docker",
   password: "docker",
   database: "listerlyify_dev",
-  hostname: "172.16.238.2",
+  hostname: System.get_env("POSTGRES_HOST"),
   pool_size: 10
