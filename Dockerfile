@@ -12,8 +12,9 @@ ADD ./package.json /opt/listerlyify/package.json
 ADD ./brunch-config.js /opt/listerlyify/brunch-config.js
 ADD ./node_modules/ /opt/concur/receipt_service/node_modules/
 ADD ./run-install /opt/listerlyify/run-install
+ADD ./run-service /opt/listerlyify/run-service
 
-RUN chmod 550 /opt/listerlyify/run-install 
+RUN chmod 550 /opt/listerlyify/run-install /opt/listerlyify/run-service
 
 COPY docker-entrypoint.sh /opt/entrypoint.sh
 ENTRYPOINT ["/opt/entrypoint.sh"]
