@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :listerlyify, Listerlyify.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "docker",
+  password: "docker",
   database: "listerlyify_test",
-  hostname: "localhost",
+  hostname: System.get_env("POSTGRES_HOST"),
   pool: Ecto.Adapters.SQL.Sandbox
