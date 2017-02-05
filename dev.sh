@@ -5,15 +5,12 @@ set -e
 usage() {
   echo "usage: dev.sh <command> [<args>]
 Some useful commands are:
-start          Start your docker containers
-stop           Stop your docker containers
+start          Start the service and database
+restart        Restart the service and database
+stop           Stop and remove listerlyify containers
 install        Install dependencies
-restart        Restart your docker containers
-watch          Restart the docker process when files change
-watch-logs     View the logs of your running docker containers
-mix            Run the mix command within the container
-npm            Run the npm command within the container
-destroy        Kills your docker containers, removes them, and removes docker images"
+mix            Run mix commands within the container
+watch-logs     View the logs of your running docker containers"
 }
 
 start() {
@@ -21,8 +18,13 @@ start() {
     watch-logs service database
 }
 
+restart() {
+    docker-compose kill
+    docker-compose up --build -d service database
+    watch-logs service database
+}
+
 stop() {
-    # docker-compose stop 2> /dev/null || true
     docker-compose kill
     docker-compose rm -f
 }
@@ -41,13 +43,22 @@ get_os() {
   fi
 }
 
+mix() {
+    echo "mix $@"
+    docker-compose exec service mix "$@"
+}
+
 set_env_vars() {
   export SERVICE_SSH_PWD=$HOME/.ssh
   export SERVICE_PWD="$(pwd)"
 }
 
 watch-logs() {
-    docker-compose logs -f "$@"
+    if [ "$1" == "" ]; then
+        docker-compose logs -f service database
+    else
+        docker-compose logs -f "$@"
+    fi
 }
 
 main() {
@@ -60,6 +71,9 @@ main() {
     "start")
       start
       ;;
+    "restart")
+      restart
+      ;;
     "get-os")
       get_os
       ;;
@@ -69,18 +83,13 @@ main() {
     "install")
       install
       ;;
-    "restart")
-      restart
+    "mix")
+      shift
+      mix "$@"
       ;;
     "watch-logs")
-      watch-logs
-      ;;
-    "npm")
       shift
-      npm "$@"
-      ;;
-    "destroy")
-      destroy
+      watch-logs "$@"
       ;;
     *)
       usage
