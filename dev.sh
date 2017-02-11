@@ -27,6 +27,7 @@ restart() {
 stop() {
     docker-compose kill
     docker-compose rm -f
+    docker network prune -f
 }
 
 install() {
